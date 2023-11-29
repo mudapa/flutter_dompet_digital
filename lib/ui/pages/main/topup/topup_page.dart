@@ -60,7 +60,7 @@ class _TopupPageState extends State<TopupPage> {
                   //   ),
                   // ),
                   Text(
-                    'Rp 0',
+                    '123123 213123',
                     style: blackTextStyle.copyWith(
                       fontSize: 16,
                       fontWeight: medium,

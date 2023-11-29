@@ -5,6 +5,7 @@ import '../ui/pages/main/pin_page.dart';
 import '../ui/pages/main/profile/profile_edit_success_page.dart';
 import '../ui/pages/main/profile/profile_page.dart';
 import '../ui/pages/main/topup/topup_page.dart';
+import '../ui/pages/main/topup/topup_success.dart';
 import '../ui/pages/onboarding_page.dart';
 import '../ui/pages/signUp/sign_up_page.dart';
 import '../ui/pages/signUp/sign_up_set_ktp_page.dart';
@@ -27,5 +28,6 @@ class AppRoutes {
         '/pin': (context) => const PinPage(),
         '/profile-edit-success': (context) => const ProfileEditSuccessPage(),
         '/topup': (context) => const TopupPage(),
+        '/topup-success': (context) => const TopupSuccessPage(),
       };
 }
