@@ -215,7 +215,6 @@ class _TopupAmountPageState extends State<TopupAmountPage> {
               onPressed: () async {
                 if (await Navigator.pushNamed(context, '/pin') == true) {
                   await launchUrl(Uri.parse('https://demo.midtrans.com/'));
-
                   Navigator.pushNamedAndRemoveUntil(
                     context,
                     '/topup-success',

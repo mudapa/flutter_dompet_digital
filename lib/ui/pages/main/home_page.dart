@@ -221,7 +221,7 @@ class HomePage extends StatelessWidget {
             height: 28,
           ),
           Text(
-            '**** **** ****',
+            '**** **** **** 1234',
             style: whiteTextStyle.copyWith(
               fontSize: 18,
               fontWeight: medium,
@@ -236,7 +236,7 @@ class HomePage extends StatelessWidget {
             style: whiteTextStyle,
           ),
           Text(
-            'formatCurrency(state.data.balance!)',
+            'Rp 999.999.999',
             style: whiteTextStyle.copyWith(
               fontSize: 24,
               fontWeight: semiBold,
