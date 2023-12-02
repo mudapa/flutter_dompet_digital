@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../blocs/Auth/auth_bloc.dart';
+import '../../../models/sign_up_model.dart';
+import '../../../shared/helpers.dart';
 import '../../../shared/theme.dart';
 import '../../widgets/buttons.dart';
 import '../../widgets/forms.dart';
+import 'sign_up_set_profile_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -12,9 +17,9 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final nameController = TextEditingController(text: '');
-  final emailController = TextEditingController(text: '');
-  final passwordController = TextEditingController(text: '');
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   bool validate() {
     if (nameController.text.isEmpty ||
@@ -94,10 +99,54 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(
                   height: 30,
                 ),
-                CustomFilledButton(
-                  title: 'Continue',
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/sign-up-set-profile');
+                BlocConsumer<AuthBloc, AuthState>(
+                  listener: (context, state) {
+                    if (state is AuthFailed) {
+                      showCustomSnackbar(
+                        context,
+                        state.error,
+                      );
+                    }
+
+                    if (state is AuthCheckEmailSuccess) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SignUpSetProfilePage(
+                            data: SignUpModel(
+                              name: nameController.text,
+                              email: emailController.text,
+                              password: passwordController.text,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is AuthLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    return CustomFilledButton(
+                      title: 'Continue',
+                      onPressed: () {
+                        if (validate()) {
+                          context.read<AuthBloc>().add(
+                                AuthCheckEmail(
+                                  emailController.text,
+                                ),
+                              );
+                        } else {
+                          showCustomSnackbar(
+                            context,
+                            'Semua field harus diisi !!!',
+                          );
+                        }
+                      },
+                    );
                   },
                 ),
               ],

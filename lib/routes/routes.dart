@@ -12,8 +12,6 @@ import '../ui/pages/main/transfer/transfer_page.dart';
 import '../ui/pages/main/transfer/transfer_success_page.dart';
 import '../ui/pages/onboarding_page.dart';
 import '../ui/pages/signUp/sign_up_page.dart';
-import '../ui/pages/signUp/sign_up_set_ktp_page.dart';
-import '../ui/pages/signUp/sign_up_set_profile_page.dart';
 import '../ui/pages/signUp/sign_up_success_page.dart';
 import '../ui/pages/signIn/sign_in_page.dart';
 import '../ui/pages/splash_page.dart';
@@ -24,8 +22,6 @@ class AppRoutes {
         '/onboarding': (context) => const OnboardingPage(),
         '/sign-in': (context) => const SignInPage(),
         '/sign-up': (context) => const SignUpPage(),
-        '/sign-up-set-profile': (context) => const SignUpSetProfilePage(),
-        '/sign-up-set-ktp': (context) => const SignUpSetKtpPage(),
         '/sign-up-success': (context) => const SignUpSuccessPage(),
         '/home': (context) => const HomePage(),
         '/profile': (context) => const ProfilePage(),

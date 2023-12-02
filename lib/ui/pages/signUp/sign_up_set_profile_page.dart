@@ -1,22 +1,29 @@
-// import 'dart:convert';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../models/sign_up_model.dart';
+import '../../../shared/helpers.dart';
 import '../../../shared/theme.dart';
 import '../../widgets/buttons.dart';
 import '../../widgets/forms.dart';
+import 'sign_up_set_ktp_page.dart';
 
 class SignUpSetProfilePage extends StatefulWidget {
-  const SignUpSetProfilePage({Key? key}) : super(key: key);
+  final SignUpModel data;
+  const SignUpSetProfilePage({
+    Key? key,
+    required this.data,
+  }) : super(key: key);
 
   @override
   State<SignUpSetProfilePage> createState() => _SignUpSetProfilePageState();
 }
 
 class _SignUpSetProfilePageState extends State<SignUpSetProfilePage> {
-  final pinController = TextEditingController(text: '');
+  final pinController = TextEditingController();
   XFile? selectedImage;
 
   selectImage() async {
@@ -29,6 +36,14 @@ class _SignUpSetProfilePageState extends State<SignUpSetProfilePage> {
         selectedImage = image;
       });
     }
+  }
+
+  bool validate() {
+    if (pinController.text.length != 6) {
+      return false;
+    }
+
+    return true;
   }
 
   @override
@@ -107,7 +122,7 @@ class _SignUpSetProfilePageState extends State<SignUpSetProfilePage> {
                   height: 16,
                 ),
                 Text(
-                  'Shayna Hanna',
+                  widget.data.name!,
                   style: blackTextStyle.copyWith(
                     fontSize: 18,
                     fontWeight: medium,
@@ -121,6 +136,7 @@ class _SignUpSetProfilePageState extends State<SignUpSetProfilePage> {
                   obscureText: true,
                   controller: pinController,
                   keyboardType: TextInputType.number,
+                  maxLength: 6,
                 ),
                 const SizedBox(
                   height: 30,
@@ -128,33 +144,23 @@ class _SignUpSetProfilePageState extends State<SignUpSetProfilePage> {
                 CustomFilledButton(
                   title: 'Continue',
                   onPressed: () {
-                    // if (pinController.text.isEmpty) {
-                    //   ScaffoldMessenger.of(context).showSnackBar(
-                    //     SnackBar(
-                    //       content: const Text(
-                    //         'Field PIN harus diisi',
-                    //       ),
-                    //       backgroundColor: redColor,
-                    //     ),
-                    //   );
-                    // } else {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => SignUpSetKtpPage(
-                    //       data: widget.data.copyWith(
-                    //         profilePicture: selectedImage == null
-                    //             ? null
-                    //             : 'data:image/png;base64,' +
-                    //                 base64Encode(File(selectedImage!.path)
-                    //                     .readAsBytesSync()),
-                    //         pin: pinController.text,
-                    //       ),
-                    //     ),
-                    //   ),
-                    // );
-                    // }
-                    Navigator.pushNamed(context, '/sign-up-set-ktp');
+                    if (validate()) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SignUpSetKtpPage(
+                            data: widget.data.copyWith(
+                              profilePicture: selectedImage == null
+                                  ? null
+                                  : 'data:image/png;base64,${base64Encode(File(selectedImage!.path).readAsBytesSync())}',
+                              pin: pinController.text,
+                            ),
+                          ),
+                        ),
+                      );
+                    } else {
+                      showCustomSnackbar(context, 'PIN Harus 6 Digit');
+                    }
                   },
                 ),
               ],

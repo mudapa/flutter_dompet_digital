@@ -9,6 +9,7 @@ class CustomFormField extends StatelessWidget {
   final bool isShowTitle;
   final Function(String)? onFieldSubmitted;
   final TextInputType keyboardType;
+  final int? maxLength;
 
   const CustomFormField({
     Key? key,
@@ -18,6 +19,7 @@ class CustomFormField extends StatelessWidget {
     this.isShowTitle = true,
     this.onFieldSubmitted,
     this.keyboardType = TextInputType.text,
+    this.maxLength,
   }) : super(key: key);
 
   @override
@@ -37,6 +39,7 @@ class CustomFormField extends StatelessWidget {
             height: 8,
           ),
         TextFormField(
+          maxLength: maxLength,
           obscureText: obscureText,
           controller: controller,
           decoration: InputDecoration(
