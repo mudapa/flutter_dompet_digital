@@ -58,7 +58,6 @@ class _SignUpSetKtpPageState extends State<SignUpSetKtpPage> {
           }
 
           if (state is AuthFailed) {
-            print(widget.data.ktp);
             showCustomSnackbar(context, state.error);
           }
         },
@@ -158,6 +157,7 @@ class _SignUpSetKtpPageState extends State<SignUpSetKtpPage> {
                           context.read<AuthBloc>().add(
                                 AuthRegister(
                                   widget.data.copyWith(
+                                    profilePicture: widget.data.profilePicture,
                                     ktp: selectedKTP == null
                                         ? null
                                         : 'data:image/png;base64,${base64Encode(File(selectedKTP!.path).readAsBytesSync())}',
@@ -182,6 +182,7 @@ class _SignUpSetKtpPageState extends State<SignUpSetKtpPage> {
                   context.read<AuthBloc>().add(
                         AuthRegister(
                           widget.data.copyWith(
+                            profilePicture: widget.data.profilePicture,
                             ktp: "",
                           ),
                         ),

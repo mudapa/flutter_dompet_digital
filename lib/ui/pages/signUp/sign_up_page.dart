@@ -117,6 +117,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               name: nameController.text,
                               email: emailController.text,
                               password: passwordController.text,
+                              profilePicture: '',
                             ),
                           ),
                         ),

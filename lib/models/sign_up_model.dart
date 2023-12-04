@@ -22,7 +22,7 @@ class SignUpModel {
       'password': password,
       'pin': pin,
       'ktp': ktp,
-      'profilePicture': profilePicture,
+      'profile_picture': profilePicture,
     };
   }
 

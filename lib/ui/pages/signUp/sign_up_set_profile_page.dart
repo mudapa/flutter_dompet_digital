@@ -150,9 +150,8 @@ class _SignUpSetProfilePageState extends State<SignUpSetProfilePage> {
                         MaterialPageRoute(
                           builder: (context) => SignUpSetKtpPage(
                             data: widget.data.copyWith(
-                              profilePicture: selectedImage == null
-                                  ? null
-                                  : 'data:image/png;base64,${base64Encode(File(selectedImage!.path).readAsBytesSync())}',
+                              profilePicture:
+                                  'data:image/png;base64,${base64Encode(File(selectedImage!.path).readAsBytesSync())}',
                               pin: pinController.text,
                             ),
                           ),
