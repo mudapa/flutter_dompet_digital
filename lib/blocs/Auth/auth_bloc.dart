@@ -3,8 +3,11 @@ import 'package:equatable/equatable.dart';
 
 import '../../models/sign_in_model.dart';
 import '../../models/sign_up_model.dart';
+import '../../models/user_edit_model.dart';
 import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
+import '../../services/user_service.dart';
+import '../../services/wallet_service.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -64,7 +67,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       }
 
-      //get current user
+      // get current user
       if (event is AuthGetCurrentUser) {
         try {
           // loading
@@ -77,6 +80,72 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
           // get current user success
           emit(AuthSuccess(user));
+        } catch (e) {
+          emit(AuthFailed(e.toString()));
+        }
+      }
+
+      // update user
+      if (event is AuthUpdateUser) {
+        try {
+          if (state is AuthSuccess) {
+            final updatedUser = (state as AuthSuccess).user.copyWith(
+                  username: event.data.username,
+                  name: event.data.name,
+                  email: event.data.email,
+                  password: event.data.password,
+                );
+
+            // loading
+            emit(AuthLoading());
+
+            // update user
+            await UserService().updateUser(event.data);
+
+            // update user success
+            emit(AuthSuccess(updatedUser));
+          }
+        } catch (e) {
+          emit(AuthFailed(e.toString()));
+        }
+      }
+
+      // update pin
+      if (event is AuthUpdatePin) {
+        try {
+          if (state is AuthSuccess) {
+            final updatedPin = (state as AuthSuccess).user.copyWith(
+                  pin: event.newPin,
+                );
+
+            // loading
+            emit(AuthLoading());
+
+            // update pin
+            await WalletService().updatePin(
+              event.oldPin,
+              event.newPin,
+            );
+
+            // update pin success
+            emit(AuthSuccess(updatedPin));
+          }
+        } catch (e) {
+          emit(AuthFailed(e.toString()));
+        }
+      }
+
+      // logout
+      if (event is AuthLogout) {
+        try {
+          // loading
+          emit(AuthLoading());
+
+          // logout
+          await AuthService().logout();
+
+          // logout success
+          emit(AuthInitial());
         } catch (e) {
           emit(AuthFailed(e.toString()));
         }

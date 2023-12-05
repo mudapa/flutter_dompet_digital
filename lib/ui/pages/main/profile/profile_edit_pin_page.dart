@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../blocs/Auth/auth_bloc.dart';
+import '../../../../models/user_edit_model.dart';
+import '../../../../shared/helpers.dart';
 import '../../../../shared/theme.dart';
 import '../../../widgets/buttons.dart';
 import '../../../widgets/forms.dart';
@@ -12,8 +16,8 @@ class ProfileEditPinPage extends StatefulWidget {
 }
 
 class _ProfileEditPinPageState extends State<ProfileEditPinPage> {
-  final oldPinController = TextEditingController(text: '');
-  final newPinController = TextEditingController(text: '');
+  final oldPinController = TextEditingController();
+  final newPinController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -56,13 +60,40 @@ class _ProfileEditPinPageState extends State<ProfileEditPinPage> {
                 const SizedBox(
                   height: 30,
                 ),
-                CustomFilledButton(
-                  title: 'Update Now',
-                  onPressed: () {
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      '/profile-edit-success',
-                      (route) => false,
+                BlocConsumer<AuthBloc, AuthState>(
+                  listener: (context, state) {
+                    if (state is AuthFailed) {
+                      showCustomSnackbar(
+                        context,
+                        state.error,
+                      );
+                    }
+
+                    if (state is AuthSuccess) {
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        '/profile-edit-success',
+                        (route) => false,
+                      );
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is AuthLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    return CustomFilledButton(
+                      title: 'Update Now',
+                      onPressed: () {
+                        context.read<AuthBloc>().add(
+                              AuthUpdatePin(
+                                oldPinController.text,
+                                newPinController.text,
+                              ),
+                            );
+                      },
                     );
                   },
                 ),

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../blocs/Auth/auth_bloc.dart';
+import '../../../../models/user_edit_model.dart';
+import '../../../../shared/helpers.dart';
 import '../../../../shared/theme.dart';
 import '../../../widgets/buttons.dart';
 import '../../../widgets/forms.dart';
@@ -12,18 +16,21 @@ class ProfileEditPage extends StatefulWidget {
 }
 
 class _ProfileEditPageState extends State<ProfileEditPage> {
-  final usernameController = TextEditingController(text: '');
-  final nameController = TextEditingController(text: '');
-  final emailController = TextEditingController(text: '');
-  final passwordController = TextEditingController(text: '');
+  final usernameController = TextEditingController();
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    // usernameController.text = widget.user.username!;
-    // nameController.text = widget.user.name!;
-    // emailController.text = widget.user.email!;
-    // passwordController.text = widget.user.password!;
+    final state = context.read<AuthBloc>().state;
+    if (state is AuthSuccess) {
+      usernameController.text = state.user.username!;
+      nameController.text = state.user.name!;
+      emailController.text = state.user.email!;
+      passwordController.text = state.user.password!;
+    }
   }
 
   @override
@@ -80,25 +87,44 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                 const SizedBox(
                   height: 30,
                 ),
-                CustomFilledButton(
-                  title: 'Update Now',
-                  onPressed: () {
-                    // context.read<AuthBloc>().add(
-                    //       AuthUpdateUser(
-                    //         widget.user,
-                    //         UserEditFormModel(
-                    //           email: emailController.text,
-                    //           name: nameController.text,
-                    //           username: usernameController.text,
-                    //           password: passwordController.text,
-                    //           pin: widget.user.pin,
-                    //         ),
-                    //       ),
-                    //     );
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      '/profile-edit-success',
-                      (route) => false,
+                BlocConsumer<AuthBloc, AuthState>(
+                  listener: (context, state) {
+                    if (state is AuthFailed) {
+                      showCustomSnackbar(
+                        context,
+                        state.error,
+                      );
+                    }
+
+                    if (state is AuthSuccess) {
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        '/profile-edit-success',
+                        (route) => false,
+                      );
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is AuthLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    return CustomFilledButton(
+                      title: 'Update Now',
+                      onPressed: () {
+                        context.read<AuthBloc>().add(
+                              AuthUpdateUser(
+                                UserEditModel(
+                                  username: usernameController.text,
+                                  name: nameController.text,
+                                  email: emailController.text,
+                                  password: passwordController.text,
+                                ),
+                              ),
+                            );
+                      },
                     );
                   },
                 ),
