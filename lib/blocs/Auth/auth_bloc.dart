@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../models/sign_in_model.dart';
 import '../../models/sign_up_model.dart';
 import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
@@ -41,6 +42,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           final user = await AuthService().register(event.data);
 
           // register success
+          emit(AuthSuccess(user));
+        } catch (e) {
+          emit(AuthFailed(e.toString()));
+        }
+      }
+
+      // login
+      if (event is AuthLogin) {
+        try {
+          // loading
+          emit(AuthLoading());
+
+          // login
+          final user = await AuthService().login(event.data);
+
+          // login success
           emit(AuthSuccess(user));
         } catch (e) {
           emit(AuthFailed(e.toString()));

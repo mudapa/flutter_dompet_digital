@@ -7,6 +7,7 @@ sealed class AuthEvent extends Equatable {
   List<Object> get props => [];
 }
 
+// check email
 class AuthCheckEmail extends AuthEvent {
   final String email;
 
@@ -16,10 +17,21 @@ class AuthCheckEmail extends AuthEvent {
   List<Object> get props => [email];
 }
 
+// register
 class AuthRegister extends AuthEvent {
   final SignUpModel data;
 
   const AuthRegister(this.data);
+
+  @override
+  List<Object> get props => [data];
+}
+
+// login
+class AuthLogin extends AuthEvent {
+  final SignInModel data;
+
+  const AuthLogin(this.data);
 
   @override
   List<Object> get props => [data];

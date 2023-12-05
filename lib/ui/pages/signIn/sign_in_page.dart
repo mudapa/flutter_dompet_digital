@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../blocs/Auth/auth_bloc.dart';
+import '../../../models/sign_in_model.dart';
+import '../../../shared/helpers.dart';
 import '../../../shared/theme.dart';
 import '../../widgets/buttons.dart';
 import '../../widgets/forms.dart';
@@ -14,6 +18,15 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   final emailController = TextEditingController(text: '');
   final passwordController = TextEditingController(text: '');
+
+  bool validate() {
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      showCustomSnackbar(context, 'Email dan Password harus diisi');
+      return false;
+    }
+
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,10 +98,42 @@ class _SignInPageState extends State<SignInPage> {
                   const SizedBox(
                     height: 30,
                   ),
-                  CustomFilledButton(
-                    title: 'Sign In',
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/home');
+                  BlocConsumer<AuthBloc, AuthState>(
+                    listener: (context, state) {
+                      if (state is AuthFailed) {
+                        showCustomSnackbar(context, state.error);
+                      }
+
+                      if (state is AuthSuccess) {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/home',
+                          (route) => false,
+                        );
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is AuthLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+
+                      return CustomFilledButton(
+                        title: 'Sign In',
+                        onPressed: () {
+                          if (validate()) {
+                            context.read<AuthBloc>().add(
+                                  AuthLogin(
+                                    SignInModel(
+                                      email: emailController.text,
+                                      password: passwordController.text,
+                                    ),
+                                  ),
+                                );
+                          }
+                        },
+                      );
                     },
                   ),
                 ],
