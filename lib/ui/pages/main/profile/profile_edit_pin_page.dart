@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../blocs/Auth/auth_bloc.dart';
-import '../../../../models/user_edit_model.dart';
 import '../../../../shared/helpers.dart';
 import '../../../../shared/theme.dart';
 import '../../../widgets/buttons.dart';
